@@ -95,7 +95,7 @@ final class Container
 
             NodeBuilder::class => function () use ($settings) {
                 $listNodeBuilder = new ListNodeBuilder($settings->enableFlexibleCasting);
-                $arrayNodeBuilder = new ArrayNodeBuilder($settings->enableFlexibleCasting);
+                $arrayNodeBuilder = new ArrayNodeBuilder($settings->enableFlexibleCasting, $settings->allowSuperfluousKeys);
 
                 $builder = new CasterNodeBuilder([
                     ListType::class => $listNodeBuilder,

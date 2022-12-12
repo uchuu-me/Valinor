@@ -10,6 +10,7 @@ use CuyZ\Valinor\Mapper\Tree\Shell;
 use CuyZ\Valinor\Type\CompositeTraversableType;
 use CuyZ\Valinor\Type\Types\ArrayType;
 use CuyZ\Valinor\Type\Types\IterableType;
+use CuyZ\Valinor\Type\Types\NativeEnumType;
 use CuyZ\Valinor\Type\Types\NonEmptyArrayType;
 
 use function assert;
@@ -18,7 +19,7 @@ use function is_array;
 /** @internal */
 final class ArrayNodeBuilder implements NodeBuilder
 {
-    public function __construct(private bool $enableFlexibleCasting)
+    public function __construct(private bool $enableFlexibleCasting, private bool $allowSuperfluousKeys)
     {
     }
 
@@ -61,6 +62,11 @@ final class ArrayNodeBuilder implements NodeBuilder
             }
 
             $child = $shell->child((string)$key, $subType)->withValue($value);
+
+            if ($this->allowSuperfluousKeys && $subType instanceof NativeEnumType && ! $child->type()->canCast($value)) {
+                continue;
+            }
+            
             $children[$key] = $rootBuilder->build($child);
         }
 
