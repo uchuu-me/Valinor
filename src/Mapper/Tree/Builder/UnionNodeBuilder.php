@@ -14,6 +14,7 @@ use CuyZ\Valinor\Type\EnumType;
 use CuyZ\Valinor\Type\ScalarType;
 use CuyZ\Valinor\Type\Type;
 use CuyZ\Valinor\Type\Types\ClassType;
+use CuyZ\Valinor\Type\Types\NativeEnumType;
 use CuyZ\Valinor\Type\Types\NullType;
 use CuyZ\Valinor\Type\Types\UnionType;
 
@@ -56,8 +57,10 @@ final class UnionNodeBuilder implements NodeBuilder
 
         if ($source !== null && count($subTypes) === 2) {
             if ($subTypes[0] instanceof NullType) {
+                $this->addNullableAttribute($subTypes[1]);
                 return $subTypes[1];
             } elseif ($subTypes[1] instanceof NullType) {
+                $this->addNullableAttribute($subTypes[0]);
                 return $subTypes[0];
             }
         }
@@ -77,6 +80,13 @@ final class UnionNodeBuilder implements NodeBuilder
         }
 
         throw new CannotResolveTypeFromUnion($source, $type);
+    }
+
+    private function addNullableAttribute($type)
+    {
+        if ($type instanceof NativeEnumType) {
+            $type->setNullable(true);
+        }
     }
 
     private function tryToBuildClassNode(UnionType $type, Shell $shell, RootNodeBuilder $rootBuilder): ?TreeNode

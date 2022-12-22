@@ -34,10 +34,13 @@ final class TreeNode
         $this->value = $value;
     }
 
-    public static function leaf(Shell $shell, mixed $value): self
+    public static function leaf(Shell $shell, mixed $value, bool $skipCheck = false): self
     {
         $instance = new self($shell, $value);
-        $instance->check();
+
+        if (!$skipCheck) {
+            $instance->check();
+        }
 
         return $instance;
     }

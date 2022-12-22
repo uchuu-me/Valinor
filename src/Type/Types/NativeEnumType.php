@@ -24,6 +24,8 @@ final class NativeEnumType implements EnumType
     /** @var array<string, UnitEnum> */
     private array $cases;
 
+    private bool $nullable = false;
+
     public function __construct(
         /** @var class-string<UnitEnum> */
         private string $enumName
@@ -120,5 +122,15 @@ final class NativeEnumType implements EnumType
 
             return $cases;
         })();
+    }
+
+    public function setNullable(bool $nullable)
+    {
+        $this->nullable = $nullable;
+    }
+
+    public function isNullable(): bool
+    {
+        return $this->nullable;
     }
 }
